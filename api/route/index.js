@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { register , loginUser } from "../controller/user";
+import { register , loginUser } from "../controller/user.js";
 const rootRoute = Router()
 
-rootRoute.use('/auth/signup',register);
-rootRoute.use('/auth/signin',loginUser);
+rootRoute.post('/auth/signup',register);
+rootRoute.post('/auth/signin',loginUser);
 
 
 export default rootRoute

@@ -1,43 +1,48 @@
-import User from "../model/user"
-import bcrypt from "bcrypt"
-export const register = async (req , res)=>{
-    try {
-        const {name , email , password}=req.body
-        const user = await User.findOne({email})
-        if(user){
-            return res.status(403).json({
-                success:false,
-                msg:"user already registerd",
-                user
-            })
-        }
-        const hashedPassword = bcrypt.hashSync(password , 12)
+import User from "../model/user.js";
+import bcrypt from 'bcryptjs'
+import jwt from "jsonwebtoken";
 
-        const newUser = new User({
-            name , email , password:hashedPassword
-        })
-
-        await newUser.save()
-
-        return res.staus(202).json({
-            success:true,
-            msg:"user is registed successfully"
-        })
-    } catch (error) {
-        console.log("error in register " , err);
-        res.staus(500).json({
-            success:false,
-            msg:'user register server error '
-        })
-        
+export const register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const checkUser = await User.findOne({ email })
+    if (checkUser) {
+      return res.status(409).json({
+        success:false,
+        msg: "User already registerd",
+        user: checkUser,
+      });
     }
-}
+    const salt = bcrypt.genSaltSync(10);
+    const hashpassword = bcrypt.hashSync(password, salt);
+    const user = new User({
+      name,
+      email,
+      password: hashpassword,
+    });
 
+   const newUser= await user.save();
+
+    return res.status(201).json({
+        success: true,
+       msg: "user saved successfuly",
+       newUser
+    });
+  } catch (error) {
+    console.log("error in the user register ", error);
+    return res.status(500).json({
+     success: false,
+      msg: "user register server error",
+    });
+  }
+};
 
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
+    
     if (!user) {
       return res.status(403).json({
         success:false,
@@ -47,14 +52,17 @@ export const loginUser = async (req, res) => {
 
     const hashpassword = user.password;
 
-    const camparedPassword = await bcrypt.compare(hashpassword, password);
-    if (!camparedPassword) {
+    
+    const comparedPassword = bcrypt.compareSync(password,hashpassword);
+
+    if (!comparedPassword) {
       return res.status(409).json({
         success:false,
         msg: "user password is wrong",
       });
     }
-
+    console.log("here ");
+    
     user.password = undefined;
 
     const token =jwt.sign(
@@ -86,3 +94,25 @@ export const loginUser = async (req, res) => {
     })
   }
 };
+
+
+export const logoutUser = async (req ,res)=>{
+  try {
+        res.clearCookie("access-token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
+      path: "/",
+    });
+
+    return res.status(200).json({
+      success: true,
+      msg: "user logged out successfuly",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success:false,
+      msg:"server error in logged out"
+    })
+  }
+}
