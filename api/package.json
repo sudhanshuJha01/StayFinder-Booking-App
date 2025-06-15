@@ -1,0 +1,30 @@
+{
+  "name": "hotel-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "hotel booking app api by sudhanshuJha01",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudhanshuJha01/StayFinder-Booking-App.git"
+  },
+  "author": "sudhanshuJha01",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sudhanshuJha01/StayFinder-Booking-App/issues"
+  },
+  "homepage": "https://github.com/sudhanshuJha01/StayFinder-Booking-App#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.2",
+    "nodemon": "^3.1.10"
+  }
+}
