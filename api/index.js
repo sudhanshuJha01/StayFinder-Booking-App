@@ -9,12 +9,15 @@ const PORT = process.env.PORT
 
 
 dbConnect()
-.then(
+.then(()=>(
     app.listen(PORT||3000,()=>{
         console.log(`Your backend server is running on the ${PORT}`);
-    })
-    
+    })) 
 )
+.catch((err)=>{
+    console.log('error in the connection of the db in main file ', err);
+    
+})
 
 
 
